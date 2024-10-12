@@ -5,18 +5,19 @@ from imblearn.over_sampling import RandomOverSampler, SMOTE
 
 from consts import CLASS_COL, VALUE_COLS
 
-DATA_PATH = abspath("./mitbih_train_15.csv")
-TEST_PATH = abspath("./mitbih_test_head.csv")
+DATA_PATH = abspath("./mitbih_train_33.csv")
+TEST_PATH = abspath("./mitbih_test_33.csv")
 def balance_classes(data, sampling):
     if sampling == 'RandomOverSampler':
         sampler = RandomOverSampler(k_neighbors=3)
     elif sampling == 'SMOTE':
         sampler = SMOTE(k_neighbors=3)
-
     X_resampled, y_resampled = sampler.fit_resample(data[VALUE_COLS], data[CLASS_COL])
     data[VALUE_COLS] = X_resampled
     data[CLASS_COL] = y_resampled
     return data
+
+
 
 
 def load_data(path, imputation, sampling):

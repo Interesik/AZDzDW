@@ -85,7 +85,7 @@ class ClassifierWrapper:
 
     def plot_learning_curve(self, figsize=(12,6), file_to_save=None):
         fig, ax = plt.subplots(figsize=figsize)
-        LearningCurveDisplay.from_estimator(self.classifier, self.dataManager.train[self.value_cols], self.dataManager.train[self.class_col], ax=ax)
+        LearningCurveDisplay.from_estimator(self.classifier, self.dataManager.train[self.value_cols], self.dataManager.train[self.class_col], ax=ax, train_sizes=np.linspace(0.1, 1.0, 5), cv=2, n_jobs=4)
         ax.set(title=f"Learning curve for {self.name}")
         plt.show()
 
