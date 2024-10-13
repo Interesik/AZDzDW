@@ -1,0 +1,410 @@
+\documentclass[12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[T1]{polski}
+\usepackage[cp1250]{inputenc}
+\newcommand{\BibTeX}{{\sc Bib}\TeX} 
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+
+\setlength{\textheight}{21cm}
+
+\title{{\bf Zadanie nr 1 - klasyfikacja wzorców}\linebreak
+Analiza danych z³o¿onych z detekcj¹ wyj¹tków}
+\author{Karol Kazusek - 254189, Sebastian Zych - 254264}
+\date{14.10.2024}
+
+\begin{document}
+\clearpage\maketitle
+\thispagestyle{empty}
+\newpage
+\setcounter{page}{1}
+\section{Cel zadania}
+Zadanie polega³o na przeprowadzeniu analiz porównawczych klasyfikacji wzorców (w³asnych,
+wyj¹tkowych) w strumieniach danych. Do analiz nale¿a³o wybraæ tematykê
+medycyny lub rozpoznawania faz ruchu aktywnoœci cz³owieka (systemy HAR)
+
+\section{Opis zaproponowanych Klasyfikatorów}
+Klasyfikatory to algorytmy stosowane w \textit{uczeniu maszynowym}, których celem jest przypisanie danych wejœciowych do jednej z wczeœniej zdefiniowanych kategorii (klas). Klasyfikacja sk³ada siê z dwóch g³ównych etapów: \textbf{trenowania} i \textbf{predykcji}. 
+
+\begin{itemize}
+    \item \textbf{Trenowanie} polega na dostarczeniu algorytmowi zbioru danych treningowych, na podstawie którego algorytm uczy siê rozpoznawaæ wzorce i ró¿nicowaæ miêdzy klasami.
+    \item \textbf{Predykcja} to proces, w którym przetrenowany model jest wykorzystywany do klasyfikowania nowych, wczeœniej niewidzianych danych.
+\end{itemize}
+
+Skutecznoœæ klasyfikatorów ocenia siê przy u¿yciu ró¿nych miar, takich jak:
+
+\begin{itemize}
+    \item \textbf{Dok³adnoœæ} (accuracy) — odsetek poprawnie sklasyfikowanych przypadków,
+    \item \textbf{Precyzja} (precision) — odsetek prawdziwych pozytywnych wyników spoœród wszystkich przyk³adów sklasyfikowanych jako pozytywne,
+    \item \textbf{Czu³oœæ} (recall) — odsetek prawdziwie pozytywnych wyników spoœród wszystkich pozytywnych przypadków w rzeczywistoœci,
+    \item \textbf{Specyficznoœæ} (specificity) — odsetek prawdziwych negatywnych wyników spoœród wszystkich przypadków rzeczywiœcie negatywnych. Mierzy zdolnoœæ klasyfikatora do prawid³owego rozpoznawania negatywnych przyk³adów, co jest szczególnie istotne w przypadku, gdy negatywna klasa jest dominuj¹ca.
+\end{itemize}
+
+Klasyfikatory znajduj¹ zastosowanie w wielu dziedzinach, takich jak medycyna, rozpoznawanie obrazów, analiza tekstu oraz inne zadania zwi¹zane z przetwarzaniem danych.
+
+\subsection{Metody klasyfikacyjne}
+
+\subsubsection{K-nn}
+
+Metoda \textbf{K-Najbli¿szych S¹siadów (K-NN)} to jedna z najprostszych technik klasyfikacji. Dzia³a na zasadzie porównywania nowego punktu danych z istniej¹cymi przyk³adami treningowymi. Algorytm wybiera \( K \) najbli¿szych s¹siadów (na podstawie odleg³oœci euklidesowej lub innych miar), a nastêpnie przypisuje nowy punkt do klasy, która wystêpuje najczêœciej wœród tych s¹siadów.
+
+\begin{itemize}
+    \item \texttt{n\_neighbors}: Liczba s¹siadów (\( K \)) do uwzglêdnienia przy klasyfikacji.
+    \item \texttt{weights}: Sposób wa¿enia s¹siadów. Mo¿liwe wartoœci to \texttt{'uniform'} (wszyscy s¹siedzi maj¹ tak¹ sam¹ wagê) i \texttt{'distance'} (bli¿si s¹siedzi maj¹ wiêkszy wp³yw).
+    \item \texttt{metric}: Miara odleg³oœci u¿ywana do porównania punktów,która w zale¿noœci od parametru mo¿e reprezentowaæ odleg³oœæ euklidesow¹ lub Manhattan.
+\end{itemize}
+
+\subsubsection{Klasyfikator baysowski}
+\textbf{Klasyfikacja Bayesowska} opiera siê na \textit{twierdzeniu Bayesa}, które opisuje zale¿noœæ miêdzy prawdopodobieñstwem wyst¹pienia klasy a dostarczonymi danymi. W najprostszym przypadku, \textbf{naiwny klasyfikator Bayesa} zak³ada, ¿e cechy s¹ niezale¿ne od siebie. Model wylicza prawdopodobieñstwo ka¿dej klasy na podstawie danych wejœciowych, a nastêpnie przypisuje nowy przyk³ad do klasy o najwiêkszym prawdopodobieñstwie.
+
+\begin{itemize}
+    \item \texttt{var\_smoothing}: Parametr ten reguluje wielkoœæ wyg³adzania (dodanie ma³ej sta³ej do wariancji, aby unikn¹æ dzielenia przez zero). (Wyg³adzanie Laplace).
+\end{itemize}
+
+\subsubsection{Drzewa decyzyjne}
+\textbf{Drzewa decyzyjne} to metoda klasyfikacji oparta na strukturze drzewa, gdzie ka¿dy wêze³ reprezentuje decyzjê na podstawie jednej cechy, a ka¿da ga³¹Ÿ odpowiada wynikom tej decyzji. Proces ten powtarza siê rekurencyjnie, a¿ do osi¹gniêcia koñcowych wêz³ów liœciowych, które reprezentuj¹ klasy.
+
+\begin{itemize}
+    \item \texttt{criterion}: Funkcja oceny podzia³u. Mo¿liwe wartoœci to \texttt{'gini'} (wspó³czynnik Giniego) i \texttt{'entropy'} (entropia).
+    \item \texttt{max\_depth}: Maksymalna g³êbokoœæ drzewa. Ograniczenie g³êbokoœci mo¿e zapobiec nadmiernemu dopasowaniu (overfitting).
+    \item \texttt{min\_samples\_split}: Minimalna liczba próbek potrzebna do podzia³u w wêŸle.
+    \item \texttt{min\_samples\_leaf}: Minimalna liczba próbek w liœciu. Pozwala na kontrolê wielkoœci koñcowych wêz³ów.
+    \item \texttt{max\_features}: Maksymalna liczba cech brana pod uwagê przy ka¿dym podziale. Mo¿e to byæ liczba ca³kowita, wartoœæ zmiennoprzecinkowa lub \texttt{'auto'}, \texttt{'sqrt'}, \texttt{'log2'}.
+\end{itemize}
+
+\subsubsection{Lasy losowe}
+
+\textbf{Lasy losowe} to technika zespo³owa oparta na wielu drzewach decyzyjnych. Ka¿de drzewo jest trenowane na losowym podzbiorze danych oraz cech. Wyniki klasyfikacji uzyskuje siê poprzez g³osowanie wiêkszoœciowe wœród wszystkich drzew. Lasy losowe zmniejszaj¹ problem nadmiernego dopasowania, który jest powszechny w pojedynczych drzewach decyzyjnych.
+
+\begin{itemize}
+    \item \texttt{n\_estimators}: Liczba drzew decyzyjnych w lesie. Wiêksza liczba drzew zwiêksza stabilnoœæ predykcji.
+    \item \texttt{criterion}: Kryterium oceny podzia³u, takie jak \texttt{'gini'} lub \texttt{'entropy'}, podobnie jak w przypadku drzew decyzyjnych.
+    \item \texttt{max\_features}: Maksymalna liczba cech brana pod uwagê przy ka¿dym podziale.
+    \item \texttt{bootstrap}: Jeœli \texttt{True}, to próbki s¹ losowane z zamian¹ (bootstrap). Jeœli \texttt{False}, nie jest stosowana zamiana.
+    \item \texttt{max\_depth}, \texttt{min\_samples\_split}, \texttt{min\_samples\_leaf}: Parametry te dzia³aj¹ podobnie jak w przypadku pojedynczych drzew decyzyjnych.
+\end{itemize}
+
+\subsubsection{SVM}
+\textbf{Maszyny wektorów noœnych (SVM)} to metoda klasyfikacji, która stara siê znaleŸæ optymaln¹ hiperp³aszczyznê, która maksymalnie rozdziela dane pomiêdzy dwie klasy. SVM mo¿e dzia³aæ zarówno liniowo, jak i nieliniowo, dziêki zastosowaniu tzw. \textit{j¹der} (kernels), które przekszta³caj¹ dane na wy¿sze wymiary, aby umo¿liwiæ rozdzielenie nieliniowych danych.
+
+\begin{itemize}
+    \item \texttt{C}: Parametr regularizacji. Wy¿sza wartoœæ \( C \) sprawia, ¿e model bardziej dopasowuje siê do danych treningowych, ale mo¿e prowadziæ do nadmiernego dopasowania.
+    \item \texttt{kernel}: Funkcja j¹drowa do przekszta³cania danych. Mo¿liwe wartoœci to \texttt{'linear'}, \texttt{'poly'} (wielomianowa), \texttt{'rbf'} (j¹dro radialne) i \texttt{'sigmoid'}.
+    \item \texttt{gamma}: Parametr j¹dra, który kontroluje zakres wp³ywu pojedynczego przyk³adu treningowego. Mo¿e byæ ustawiony na \texttt{'scale'} lub \texttt{'auto'}.
+    \item \texttt{probability}: Jeœli \texttt{True}, to model bêdzie zwraca³ prawdopodobieñstwa klas, co wymaga dodatkowego obliczenia.
+\end{itemize}
+\subsubsection{Perceptron Wielowarstwowy (MLP)}
+\textbf{Perceptron wielowarstwowy (MLP)} to algorytm uczenia g³êbokiego bazuj¹cy na sztucznych sieciach neuronowych. To jedna z najprostszych form sieci neuronowych, bêd¹ca modelem uczenia nadzorowanego. Jego struktura sk³ada siê z trzech g³ównych warstw: warstwy wejœciowej, jednej lub wiêcej warstw ukrytych oraz warstwy wyjœciowej. Ka¿da warstwa sk³ada siê z neuronów, które s¹ podstawowymi jednostkami przetwarzaj¹cymi dane.
+
+\begin{itemize}
+    \item \texttt{hidden\_layer\_sizes}: Liczba neuronów w ka¿dej warstwie ukrytej. Mo¿na podaæ jedn¹ wartoœæ (liczba neuronów w jednej warstwie) lub krotkê definiuj¹c¹ liczbê neuronów w kilku warstwach. Domyœlnie: (100,).
+    \item \texttt{activation}: Funkcja aktywacji dla neuronów. Mo¿liwe wartoœci to \texttt{'identity'}, \texttt{'logistic'}, \texttt{'tanh'} i \texttt{'relu'}.
+    \item \texttt{solver}: Algorytm u¿ywany do optymalizacji. Mo¿liwe wartoœci to \texttt{'lbfgs'} (optymalizacja metod¹ quasi-Newtona), \texttt{'sgd'} (stochastyczny gradient prosty) i \texttt{'adam'} (optymalizacja adaptacyjna).
+    \item \texttt{alpha}: Parametr regularyzacji \( L_2 \), który zapobiega nadmiernemu dopasowaniu.
+    \item \texttt{learning\_rate}: Szybkoœæ uczenia. Mo¿liwe wartoœci to \texttt{'constant'}, \texttt{'invscaling'} oraz \texttt{'adaptive'}.
+    \item \texttt{max\_iter}: Maksymalna liczba iteracji podczas treningu.
+\end{itemize}
+
+\section{Charakterystyka wybranych do danych}
+
+\href{https://www.physionet.org/content/mitdb/1.0.0/}{MIT-BIH Arrhythmia Database} to szeroko stosowany zestaw danych wykorzystywany w badaniach dotycz¹cych analizy sygna³ów elektrokardiograficznych (EKG) oraz automatycznej klasyfikacji arytmii. Zbiór ten zawiera 48 zapisów sygna³ów EKG zarejestrowanych u 47 pacjentów, w tym zarówno osób z ró¿nymi typami arytmii, jak i zdrowych. Ka¿dy zapis obejmuje oko³o 30 minut sygna³u EKG, który zosta³ pobrany w czêstotliwoœci 125 Hz.
+
+Dane zosta³y rêcznie oznakowane przez kardiologów, co pozwala na identyfikacjê ró¿nych typów arytmii, takich jak np. skurcze dodatkowe, migotanie przedsionków czy blokady serca. MIT-BIH Arrhythmia Database jest czêsto wykorzystywany w algorytmach sztucznej inteligencji do trenowania systemów do automatycznej diagnozy arytmii. 
+\\
+Kroki u¿ywane do ekstrakcji uderzeñ z sygna³u EKG wed³ug autorów \cite{DBLP:journals/corr/abs-1805-00794} by³y nastêpuj¹ce:
+\begin{enumerate}
+    \item Podzia³ ci¹g³ego sygna³u EKG na okna 10s i wybór jednego okna 10s z sygna³u EKG.
+    \item Normalizacja wartoœci amplitudy do zakresu od zera do jeden.
+    \item Znalezienie zbioru wszystkich lokalnych maksimów na podstawie zerokrosów pierwszej pochodnej.
+    \item Znalezienie zbioru kandydatów na szczyty R EKG poprzez zastosowanie progu 0.9 na znormalizowanej wartoœci lokalnych maksimów.
+    \item Znalezienie mediany interwa³ów czasowych R-R jako nominalnego okresu bicia serca dla danego okna (T).
+    \item Dla ka¿dego szczytu R wybór czêœci sygna³u o d³ugoœci równej 1.2T.
+    \item Uzupe³nienie ka¿dej wybranej czêœci zerami, aby jej d³ugoœæ by³a równa zdefiniowanej sta³ej d³ugoœci.
+\end{enumerate}
+
+\textbf{Liczba próbek}: 109446 \\
+\textbf{Liczba kategorii}: 5 \\
+\textbf{Czêstotliwoœæ próbkowania}: 125Hz \\
+\textbf{Klasy}: \\
+\begin{tabular}{lc}
+    Normalne uderzenie &  0 \\ 
+    Przedwczesne uderzenie nadkomorowe &  1 \\ 
+    Przedwczesny skurcz komorowy &  2 \\ 
+    Fuzja skurczu komorowego i normalnego uderzenia &  3 \\ 
+    Niezdyscyplinowane uderzenie &  4 \\ 
+\end{tabular}
+   
+
+%TODO END
+
+\section{Eksperymenty i wyniki}
+
+\subsection{Eksperyment nr 1}
+\subsubsection{Za³o¿enia}
+Analiza wektora wag neuronu w kontekœcie wielokrotnego zastosowania algorytmu treningowego, w którym liczba wag neuronu $N$ jest mniejsza ni¿ liczba próbek treningowych $M$ (czyli $N < M$).
+
+\begin{table}[h!]
+    \centering
+    \caption{Za³o¿enia parametrów wyjœciowych - eksperyment nr 1}
+    \vspace{0.2cm}
+    \begin{tabular}{c c}
+    \hline\hline\\[-0.4cm]
+    \textbf{Parametr} & \textbf{Wartoœæ} \\ \hline
+    Liczba wag neuronu (N) & 5 \\
+    Liczba wzorców treningowych (M) & 10 \\
+    Zakres wartoœci wag neuronu & [-1, 1] \\
+    Liczba epok (K) & 14000 \\
+    Krok treningowy & 0.8 \\
+    \end{tabular}
+    \end{table}
+
+    \begin{table}[h!]
+        \caption{Za³o¿enia wag dla eksperymentu nr 1}
+        \centering
+        \vspace{0.2cm}
+        \begin{tabular}{c c}
+         \hline\hline\\[-0.4cm]
+         \textbf{Neruron} & \textbf{Wagi pocz¹tkowe neuronu}\\[0.1cm]
+         \hline
+         \textbf{1}&[0.7022602  0.01750665 0.79466921 0.92162914 0.90279926]\\
+         \textbf{2}&[0.41036501 0.54634851 0.1133011  0.26291431 0.10229738]\\
+         \textbf{3}&[0.35029543 0.53505635 0.51316328 0.62997295 0.84010926]\\
+         \textbf{4}&[0.09378692 0.3522956  0.81628097 0.48155047 0.33005786]\\
+         \textbf{5}&[0.97057748 0.33640186 0.21091255 0.69016781 0.7327417 ]\\ [0.1cm]
+         \hline
+        \end{tabular}
+       \end{table}
+
+\subsubsection{Przebieg}
+Algorytm treningowy dla neuronu liniowego zosta³ uruchomiony,
+korzystaj¹c z parametrów przedstawionych w Tabeli 1. Za ka¿dym razem
+wykorzystano ten sam zbiór danych treningowych wygenerowane losowo. Wartoœci wag by³y inicjowane losowo przy uruchomieniu.
+
+\newpage
+\subsubsection{Rezultat}
+
+\begin{table}[h!]
+ \caption{Rezultaty eksperymentu nr 1}
+ \centering
+ \vspace{0.2cm}
+ \begin{tabular}{c c}
+  \hline\hline\\[-0.4cm]
+  \textbf{Neruron} & \textbf{Wagi koñcowe neuronu}\\[0.1cm]
+  \hline
+  \textbf{1} &[1.10044389 5.19383826 0.27373934 1.73954117 -4.72341669] \\
+  \textbf{2} &[1.10044389 5.19383826 0.27373934 1.73954117 -4.72341669] \\
+  \textbf{3} &[1.10044389 5.19383826 0.27373934 1.73954117 -4.72341669] \\
+  \textbf{4} &[1.10044389 5.19383826 0.27373934 1.73954117 -4.72341669]\\
+  \textbf{5} &[1.10044389 5.19383826 0.27373934 1.73954117 -4.72341669]\\ [0.1cm]
+  \hline
+ \end{tabular}
+ \label{wyniki eksperymentu pierwszego}
+\end{table}
+
+\begin{table}[h!]
+    \caption{Wyniki 1 neuronu z wykorzystaniem zbioru treningowego jako wektory wejœciowe neuronu wytrenowanego: }
+    \centering
+    \vspace{0.2cm}
+    \begin{tabular}{c c c}
+     \hline\hline\\[-0.4cm]
+     \textbf{Numer przypadku} & \textbf{Klasyfikacja neurona} & \textbf{R. klasyfikacja}\\[0.1cm]
+     \hline
+     \textbf{1} & 1.62866269 & 1\\
+     \textbf{2} & 0.75101212 & 1\\
+     \textbf{3} & 0.88028287 & 0\\
+     \textbf{4} & 2.23147244 & 1\\
+     \textbf{5} & 1.40843858 & 1\\ 
+     \textbf{6} & 2.43287648 & 1\\
+     \textbf{7} & 2.78033059 & 0\\
+     \textbf{8} & 4.54720541 & 1\\
+     \textbf{9} & 4.44872991 & 0\\
+     \textbf{10} & 3.10839639 & 1\\ [0.1cm]
+     \hline
+    \end{tabular}
+    \label{wyniki eksperymentu pierwszego}
+   \end{table}
+   \newpage
+\subsection{Eksperyment nr 2}
+
+Analiza wektora wag neuronu w kontekœcie wielokrotnego zastosowania algorytmu treningowego, w którym liczba wag neuronu $N$ jest równa liczbie próbek treningowych $M$ (czyli $N = M$).
+
+\begin{table}[h!]
+    \centering
+    \caption{Za³o¿enia parametrów wyjœciowych - eksperyment nr 2}
+    \vspace{0.2cm}
+    \begin{tabular}{c c}
+    \hline\hline\\[-0.4cm]
+    \textbf{Parametr} & \textbf{Wartoœæ}\\ \hline
+    Liczba wag neuronu (N) & 5\\
+    Liczba wzorców treningowych (M) & 5\\
+    Zakres wartoœci wag neuronu & [-1, 1]\\
+    Liczba epok (K) & 14000\\
+    Krok treningowy & 0.8\\
+    \end{tabular}
+    \end{table}
+
+    \begin{table}[h!]
+        \caption{Za³o¿enia wag dla eksperymentu nr 2}
+        \centering
+        \vspace{0.2cm}
+        \begin{tabular}{c c}
+         \hline\hline\\[-0.4cm]
+         \textbf{Neruron} & \textbf{Wagi pocz¹tkowe neuronu}\\[0.1cm]
+         \hline
+         \textbf{1}&[0.25718081 0.23160417 0.12374798 0.2100194  0.43299329]\\
+         \textbf{2}&[0.9268277  0.03963894 0.59703405 0.13471647 0.06900094]\\
+         \textbf{3}&[0.30719827 0.43147593 0.11097351 0.13570207 0.27112304]\\
+         \textbf{4}&[0.63129549 0.00481451 0.72005156 0.74442693 0.73818147]\\
+         \textbf{5}&[0.23434677 0.5381695  0.76920115 0.57128691 0.6599291 ]\\ [0.1cm]
+         \hline
+        \end{tabular}
+       \end{table}
+
+\subsubsection{Przebieg}
+Algorytm treningowy dla neuronu liniowego zosta³ uruchomiony,
+korzystaj¹c z parametrów przedstawionych w Tabeli 5. Za ka¿dym razem
+wykorzystano ten sam zbiór danych treningowych wygenerowane losowo. Wartoœci wag by³y inicjowane losowo przy uruchomieniu.
+
+\newpage
+\subsubsection{Rezultat}
+
+\begin{table}[h!]
+ \caption{Rezultaty eksperymentu nr 2}
+ \centering
+ \vspace{0.2cm}
+ \begin{tabular}{c c}
+  \hline\hline\\[-0.4cm]
+  \textbf{Neruron} & \textbf{Wagi koñcowe neuronu}\\[0.1cm]
+  \hline
+  \textbf{1}&[ 1.75545992  0.72352631 -0.45735995  0.30204395 -0.62659508]\\
+  \textbf{2}&[ 1.75545992  0.72352631 -0.45735995  0.30204395 -0.62659508]\\
+  \textbf{3}&[ 1.75545992  0.72352631 -0.45735995  0.30204395 -0.62659508]\\
+  \textbf{4}&[ 1.75545992  0.72352631 -0.45735995  0.30204395 -0.62659508]\\
+  \textbf{5}&[ 1.75545992  0.72352631 -0.45735995  0.30204395 -0.62659508]\\ [0.1cm]
+  \hline
+ \end{tabular}
+ \label{wyniki eksperymentu drugiego}
+\end{table}
+
+\begin{table}[h!]
+    \caption{Wyniki 1 neuronu z wykorzystaniem zbioru treningowego jako wektory wejœciowe neuronu wytrenowanego:}
+    \centering
+    \vspace{0.2cm}
+    \begin{tabular}{c c c}
+     \hline\hline\\[-0.4cm]
+     \textbf{Numer przypadku} & \textbf{Klasyfikacja neurona} & \textbf{R. klasyfikacja}\\[0.1cm]
+     \hline
+     \textbf{1} & 1.00000000e+00 & 1\\
+     \textbf{2} & 1.00000000e+00 & 1\\
+     \textbf{3} & -4.62567283e-16 & 0\\
+     \textbf{4} & 1.00000000e+00 & 1\\
+     \textbf{5} & 1.00000000e+00 & 1\\ [0.1cm]
+     \hline
+    \end{tabular}
+    \label{wyniki eksperymentu drugiego}
+   \end{table}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PODROZDZIA£ PT. EKSPERYMENT NR N 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Eksperyment nr 3}
+Analiza wektora wag neuronu w kontekœcie wielokrotnego zastosowania algorytmu treningowego, w którym liczba wag neuronu $N$ jest wiêksza ni¿ liczba próbek treningowych $M$ (czyli $N > M$).
+
+\begin{table}[h!]
+    \centering
+    \caption{Za³o¿enia parametrów wyjœciowych - eksperyment nr 3}
+    \vspace{0.2cm}
+    \begin{tabular}{c c}
+    \hline\hline\\[-0.4cm]
+    \textbf{Parametr} & \textbf{Wartoœæ} \\ \hline
+    Liczba wag neuronu (N) & 5 \\
+    Liczba wzorców treningowych (M) & 2 \\
+    Zakres wartoœci wag neuronu & [-1, 1] \\
+    Liczba epok (K) & 14000 \\
+    Krok treningowy & 0.8 \\
+    \end{tabular}
+    \end{table}
+
+    \begin{table}[h!]
+        \caption{Za³o¿enia wag dla eksperymentu nr 3}
+        \centering
+        \vspace{0.2cm}
+        \begin{tabular}{c c}
+         \hline\hline\\[-0.4cm]
+         \textbf{Neruron} & \textbf{Wagi pocz¹tkowe neuronu}\\[0.1cm]
+         \hline
+         \textbf{1}&[0.042668   0.24044789 0.39155331 0.72852958 0.18479858]\\
+         \textbf{2}&[0.82432786 0.08099875 0.74098371 0.63442987 0.18990254]\\
+         \textbf{3}&[0.47082526 0.67922145 0.38200882 0.77416749 0.02424662]\\
+         \textbf{4}&[0.63795142 0.32744639 0.56587628 0.52658763 0.81397631]\\
+         \textbf{5}&[0.44989125 0.83818744 0.62580719 0.2009764  0.86055305]\\ [0.1cm]
+         \hline
+        \end{tabular}
+       \end{table}
+
+\subsubsection{Przebieg}
+Algorytm treningowy dla neuronu liniowego zosta³ uruchomiony,
+korzystaj¹c z parametrów przedstawionych w Tabeli 9. Za ka¿dym razem
+wykorzystano ten sam zbiór danych treningowych wygenerowane losowo. Wartoœci wag by³y inicjowane losowo przy uruchomieniu.
+\newpage
+\subsubsection{Rezultat}
+
+\begin{table}[h!]
+ \caption{Rezultaty eksperymentu nr 3}
+ \centering
+ \vspace{0.2cm}
+ \begin{tabular}{c c}
+  \hline\hline\\[-0.4cm]
+  \textbf{Neruron} & \textbf{Wagi koñcowe neuronu}\\[0.1cm]
+  \hline
+  \textbf{1}&[0.10632304 0.80405649 0.4017791  0.45961974 0.28680895]\\
+  \textbf{2}&[0.70692232 0.59012639 0.63854747 0.09975784 0.12163089]\\
+  \textbf{3}&[0.38247018 0.85732429 0.31598488 0.5082556 -0.04300429]\\
+  \textbf{4}&[0.43267451 0.5126257  0.42481907 0.06093346 0.64003502]\\
+  \textbf{5}&[0.27104984 0.54160379 0.52762757 0.10003904 0.67356591]\\ [0.1cm]
+  \hline
+ \end{tabular}
+ \label{wyniki eksperymentu trzeciego}
+\end{table} 
+\begin{table}[h!]
+    \caption{Wyniki 1 neuronu z wykorzystaniem zbioru treningowego jako wektory wejœciowe neuronu wytrenowanego:}
+    \centering
+    \vspace{0.2cm}
+    \begin{tabular}{c c c}
+     \hline\hline\\[-0.4cm]
+     \textbf{Numer przypadku} & \textbf{Klasyfikacja neurona} & \textbf{R. klasyfikacja}\\[0.1cm]
+     \hline
+     \textbf{1} & 1 & 1\\
+     \textbf{2} & 1 & 1\\ [0.1cm]
+     \hline
+    \end{tabular}
+    \label{wyniki eksperymentu trzeciego}
+   \end{table}
+\newpage
+
+\section{Wnioski}
+
+Wnioski z przeprowadzonych eksperymentów dowodz¹, ¿e 
+
+\begin{itemize}
+    \item Na wyjœciu dla przypadku N < M wyniki znacznie ró¿ni³y siê od oczekiwanych wartoœci dla wzorców treningowych. Powód mo¿na znaleŸæ
+    w nie dostatecznej iloœci wag.
+    \item Dla przypadku N = M oraz N > M wartoœæ koñcowych wag nie s¹
+    zmienne. Oznacza to brak przeszkód w nauce wzorców oraz przewidywañ wartoœci wag. W przypadku N < M nie jest w stanie skutecznie
+    nauczyæ wzorzec. Zwraca ona ró¿ne wartoœci wag.
+    \item Da³o siê zaobserwowaæ podobieñstwo dzia³ania neuronu liniowego do
+    problemu rozwi¹zywania uk³adu równañ z wieloma niewiadomymi.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BIBLIOGRAFIA
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand\refname{Bibliografia}
+\bibliographystyle{plain}
+\bibliography{bibliografia_wzor}
+
+\end{document}
