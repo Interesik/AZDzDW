@@ -5,8 +5,8 @@ from imblearn.over_sampling import RandomOverSampler, SMOTE
 
 from consts import CLASS_COL, VALUE_COLS
 
-DATA_PATH = abspath("./mitbih_train_33.csv")
-TEST_PATH = abspath("./mitbih_test_33.csv")
+DATA_PATH = abspath("./mitbih_train_25.csv")
+TEST_PATH = abspath("./mitbih_test_25.csv")
 def balance_classes(data, sampling):
     if sampling == 'RandomOverSampler':
         sampler = RandomOverSampler(k_neighbors=3)
@@ -22,7 +22,7 @@ def balance_classes(data, sampling):
 
 def load_data(path, imputation, sampling):
     data = pd.read_csv(path)
-    # skip unamed column form csv
+    # skip unamed colunamedumn form csv
     data = data.drop(data.columns[0], axis=1)
     data = imputate_data(data, imputation)
     if sampling is not None:

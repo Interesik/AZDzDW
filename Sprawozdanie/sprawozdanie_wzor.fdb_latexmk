@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex sprawozdanie_wzor"] 0 "sprawozdanie_wzor.aux" "sprawozdanie_wzor.bbl" "sprawozdanie_wzor" 0 -1
+["bibtex sprawozdanie_wzor"] 1729073342.9452 "sprawozdanie_wzor.aux" "sprawozdanie_wzor.bbl" "sprawozdanie_wzor" 1729073343.11861 2
   "./bibliografia_wzor.bib" 1728890341.21896 628 1ab77d08557ca45400a9e3f57d7a1070 ""
   "/usr/local/share/miktex-texmf/bibtex/bst/bibtex/plain.bst" 1728893855.91795 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "sprawozdanie_wzor.aux" 1728993063.24782 8752 0700fa3088b289063dc7ccd0b30d2275 "pdflatex"
+  "sprawozdanie_wzor.aux" 1729073342.94061 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
   (generated)
   "sprawozdanie_wzor.bbl"
   "sprawozdanie_wzor.blg"
   (rewritten before read)
-["pdflatex"] 1728993062.37006 "/home/karol/detekcja/Sprawozdanie/sprawozdanie_wzor.tex" "sprawozdanie_wzor.pdf" "sprawozdanie_wzor" 1728993063.72209 2
+["pdflatex"] 1729073341.40037 "/home/karol/detekcja/Sprawozdanie/sprawozdanie_wzor.tex" "sprawozdanie_wzor.pdf" "sprawozdanie_wzor" 1729073342.66449 2
   "/home/karol/.miktex/texmfs/data/fonts/map/pdftex/pdftex.map" 1728899672.48086 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "/home/karol/.miktex/texmfs/data/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1200.pk" 1728893305.48097 31952 a811a0f65cb215ccfd5635acf9d835fa ""
   "/home/karol/.miktex/texmfs/data/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1440.pk" 1728893304.08497 40136 8acd0f4cf9098719d32865bf25a3a539 ""
@@ -40,7 +40,7 @@
   "/home/karol/.miktex/texmfs/install/tex/latex/refcount/refcount.sty" 1728893232.00451 9878 9e94e8fa600d95f9c7731bb21dfb67a4 ""
   "/home/karol/.miktex/texmfs/install/tex/latex/rerunfilecheck/rerunfilecheck.sty" 1728893267.841 9714 ba3194bd52c8499b3f1e3eb91d409670 ""
   "/home/karol/.miktex/texmfs/install/tex/latex/url/url.sty" 1728893255.22083 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
-  "/home/karol/detekcja/Sprawozdanie/sprawozdanie_wzor.tex" 1728993060.3798 21889 c8867fddabeecf52fd3abc810c47f75c ""
+  "/home/karol/detekcja/Sprawozdanie/sprawozdanie_wzor.tex" 1729073340.98461 21889 c8867fddabeecf52fd3abc810c47f75c ""
   "/usr/local/share/miktex-texmf/fonts/tfm/jknappen/ec/ecbx1200.tfm" 1728893860.34997 3200 b8d69bc738e5ef3e08cefeef3109ff56 ""
   "/usr/local/share/miktex-texmf/fonts/tfm/jknappen/ec/ecbx1440.tfm" 1728893860.34997 3196 0b37fa3083e15c57cfa8c4ff52f2807a ""
   "/usr/local/share/miktex-texmf/fonts/tfm/jknappen/ec/ecbx1728.tfm" 1728893860.34997 3204 d35cb76836b6cb4ed404dd64a550530d ""
@@ -119,10 +119,10 @@
   "RF1.png" 1728898321.19552 49694 c44486bf9983a50844e702dc8e225cf3 ""
   "RF2.png" 1728898353.34363 61144 9ed7623020115c4f2d87976ac7c11a8b ""
   "RF3.png" 1728898385.50774 57410 4c3ae895b1e47dbca6ca3cce0baea028 ""
-  "sprawozdanie_wzor.aux" 1728993063.24782 8752 0700fa3088b289063dc7ccd0b30d2275 "pdflatex"
-  "sprawozdanie_wzor.bbl" 1728992995.57542 0 d41d8cd98f00b204e9800998ecf8427e "bibtex sprawozdanie_wzor"
-  "sprawozdanie_wzor.out" 1728993063.24782 3351 b531c03031b59938a4475272c965fbbb "pdflatex"
-  "sprawozdanie_wzor.tex" 1728993060.3798 21889 c8867fddabeecf52fd3abc810c47f75c ""
+  "sprawozdanie_wzor.aux" 1729073342.94061 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  "sprawozdanie_wzor.bbl" 1729073343.06461 0 d41d8cd98f00b204e9800998ecf8427e "bibtex sprawozdanie_wzor"
+  "sprawozdanie_wzor.out" 0 -1 0 "pdflatex"
+  "sprawozdanie_wzor.tex" 1729073340.98461 21889 c8867fddabeecf52fd3abc810c47f75c ""
   (generated)
   "sprawozdanie_wzor.aux"
   "sprawozdanie_wzor.log"
