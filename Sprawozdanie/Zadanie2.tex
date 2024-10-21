@@ -1,0 +1,201 @@
+\documentclass[12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[T1]{polski}
+\usepackage[cp1250]{inputenc}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage[left=1.5cm, right=2cm]{geometry}
+\setlength{\textheight}{21cm}
+
+\title{{\bf Zadanie nr 2 - Wyznaczanie cech oraz badanie trendu}\linebreak
+Analiza danych z³o¿onych z detekcj¹ wyj¹tków}
+\author{Karol Kazusek - 254189, Sebastian Zych - 254264}
+\date{21.10.2024}
+
+\begin{document}
+\clearpage\maketitle
+\thispagestyle{empty}
+\newpage
+\setcounter{page}{1}
+\section{Cel zadania}
+Zadanie polega na wyznaczeniu cech w wybranym strumieniu danych oraz wyznaczeniu
+trendu. Do analiz nale¿a³o wybraæ tematykê medycyny lub rozpoznawania faz ruchu aktywnoœci cz³owieka (systemy HAR)
+
+\section{Opis zaproponowanych Klasyfikatorów i algorytmów detekcji zmian }
+
+\subsection{Metoda klasyfikacyjne}
+
+\subsubsection{K-nn}
+
+Metoda \textbf{K-Najbli¿szych S¹siadów (K-NN)} to jedna z najprostszych technik klasyfikacji. Dzia³a na zasadzie porównywania nowego punktu danych z istniej¹cymi przyk³adami treningowymi. Algorytm wybiera \( K \) najbli¿szych s¹siadów (na podstawie odleg³oœci euklidesowej lub innych miar), a nastêpnie przypisuje nowy punkt do klasy, która wystêpuje najczêœciej wœród tych s¹siadów.
+
+\begin{itemize}
+    \item \texttt{n\_neighbors}: Liczba s¹siadów (\( K \)) do uwzglêdnienia przy klasyfikacji.
+    \item \texttt{weights}: Sposób wa¿enia s¹siadów. Mo¿liwe wartoœci to \texttt{'uniform'} (wszyscy s¹siedzi maj¹ tak¹ sam¹ wagê) i \texttt{'distance'} (bli¿si s¹siedzi maj¹ wiêkszy wp³yw).
+    \item \texttt{metric}: Miara odleg³oœci u¿ywana do porównania punktów, w naszym przypadku wyznaczamy odleg³oœæ za pomoc¹ metryki wyznaczon¹ przez DTW.
+\end{itemize}
+
+\subsubsection{DTW}
+
+Metryka \textbf{Dynamic Time Warping (DTW)} to algorytm s³u¿¹cy do mierzenia odleg³oœci miêdzy dwoma sekwencjami czasowymi, które mog¹ ró¿niæ siê czestotliwoœci¹, faz¹ lub d³ugoœci¹. Jego celem jest znalezienie optymalnej nieliniowej œcie¿ki dopasowania miêdzy dwiema sekwencjami, minimalizuj¹c ró¿nice miêdzy nimi.
+Algorytm wykorzystuje dynamiczne programowanie, aby efektywnie znaleŸæ najlepsze dopasowanie.
+
+\subsection{Metoda detekcji zmian}
+
+\subsubsection{ADWIN}
+
+(Okno przesuwne) \textbf{Adaptive Windowing (ADWIN)} to metoda wykrywania concept drift, czyli zjawiska zmiany rozk³adu danych w czasie, co mo¿e wp³ywaæ na skutecznoœæ modeli ucz¹cych siê. 
+ADWIN dzia³a poprzez dynamiczne dostosowywanie okna czasowego, które monitoruje dane strumieniowe, staraj¹c siê zidentyfikowaæ momenty, w których statystyczne w³aœciwoœci danych ulegaj¹ zmianie.
+Kiedy wykrywana jest istotna ró¿nica miêdzy star¹ a now¹ czêœci¹ okna, starsze dane s¹ odrzucane, a nowe w³¹czane do analizy. Dziêki automatycznej adaptacji wielkoœci okna ADWIN skutecznie reaguje na ró¿ne rodzaje i prêdkoœci driftu, co sprawia, ¿e jest u¿ytecznym narzêdziem w œrodowiskach strumieniowych.
+
+\begin{itemize}
+  \item \textbf{delta}:
+  \begin{itemize}
+    \item Typ: \texttt{float}
+    \item Opis: Kontroluje poziom istotnoœci statystycznej przy wykrywaniu driftu. Ni¿sza wartoœæ oznacza bardziej restrykcyjne wykrywanie zmian, wy¿sza – czêstsze wykrywanie.
+  \end{itemize}
+  
+  \item \textbf{clock}:
+  \begin{itemize}
+    \item Typ: \texttt{int}
+    \item Opis: Okreœla, co ile próbek algorytm sprawdza mo¿liwoœæ wyst¹pienia driftu.
+  \end{itemize}
+  
+  \item \textbf{min\_window\_length}:
+  \begin{itemize}
+    \item Typ: \texttt{int}
+    \item Opis: Minimalna d³ugoœæ okna obserwacyjnego, chroni przed zbyt szybkim usuwaniem starszych danych.
+  \end{itemize}
+  
+  \item \textbf{grace\_period}:
+  \begin{itemize}
+    \item Typ: \texttt{int}
+    \item Opis: Minimalna liczba obserwacji przed rozpoczêciem testu na concept drift.
+  \end{itemize}
+\end{itemize}
+
+\section{Charakterystyka wybranych do danych}
+
+\href{https://www.physionet.org/content/mitdb/1.0.0/}{MIT-BIH Arrhythmia Database} to szeroko stosowany zestaw danych wykorzystywany w badaniach dotycz¹cych analizy sygna³ów elektrokardiograficznych (EKG) oraz automatycznej klasyfikacji arytmii. Zbiór ten zawiera 48 zapisów sygna³ów EKG zarejestrowanych u 47 pacjentów, w tym zarówno osób z ró¿nymi typami arytmii, jak i zdrowych. Ka¿dy zapis obejmuje oko³o 30 minut sygna³u EKG, który zosta³ pobrany w czêstotliwoœci 125 Hz.
+
+Dane zosta³y rêcznie oznakowane przez kardiologów, co pozwala na identyfikacjê ró¿nych typów arytmii, takich jak np. skurcze dodatkowe, migotanie przedsionków czy blokady serca. MIT-BIH Arrhythmia Database jest czêsto wykorzystywany w algorytmach sztucznej inteligencji do trenowania systemów do automatycznej diagnozy arytmii. 
+\\
+Kroki u¿ywane do ekstrakcji uderzeñ z sygna³u EKG wed³ug autorów DBLP:journals/corr/abs-1805-0079DBLP:journals/corr/abs-1805-007944 by³y nastêpuj¹ce:
+\begin{enumerate}
+    \item Podzia³ ci¹g³ego sygna³u EKG na okna 10s i wybór jednego okna 10s z sygna³u EKG.
+    \item Normalizacja wartoœci amplitudy do zakresu od zera do jeden.
+    \item Znalezienie zbioru wszystkich lokalnych maksimów na podstawie zerokrosów pierwszej pochodnej.
+    \item Znalezienie zbioru kandydatów na szczyty R EKG poprzez zastosowanie progu 0.9 na znormalizowanej wartoœci lokalnych maksimów.
+    \item Znalezienie mediany interwa³ów czasowych R-R jako nominalnego okresu bicia serca dla danego okna (T).
+    \item Dla ka¿dego szczytu R wybór czêœci sygna³u o d³ugoœci równej 1.2T.
+    \item Uzupe³nienie ka¿dej wybranej czêœci zerami, aby jej d³ugoœæ by³a równa zdefiniowanej sta³ej d³ugoœci.
+\end{enumerate}
+
+\textbf{Liczba próbek}: 21900  \\
+\textbf{Liczba kategorii}: 5 \\
+\textbf{Czêstotliwoœæ próbkowania}: 125Hz \\
+\begin{tabular}{lcc}
+    \textbf{Nazwa klasy} & \textbf{etykieta} & \textbf{liczebnoœæ} \\
+    \hline\hline\\[-0.4cm]
+    Normalne uderzenie &  0 & 1658 \\ \hline
+    Przedwczesne uderzenie nadkomorowe &  1 &  556\\ 
+    Przedwczesny skurcz komorowy &  2 & 1448\\ 
+    Fuzja skurczu komorowego i normalnego uderzenia &  3 & 162\\ 
+    Niezdyscyplinowane uderzenie &  4 & 1608\\ 
+\end{tabular}
+Dane w celu trenowania klasyfikatorów 1-NN-DTW i 3-NN-DTW zosta³y okrojeone do liczebnoœci 100 na ka¿d¹ klasê, przez wysokie wymagania sprzêtowe algorytmów.
+
+
+\section{Eksperymenty i wyniki}
+
+\subsection{Eksperyment nr 1}
+\subsubsection{Za³o¿enia}
+Wykonanie klasyfikatora z metryk¹ DTW dla ró¿nych liczby s¹siadów.
+
+\subsubsection{Rezultat 1-NN-DTW i 3-NN-DTW}
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Classifier} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+KNeighborsClassifier\_metric=DTW\_n\_neighbors=1 & 0.660 & 0.682765 & 0.660 & 0.915 \\ \hline
+KNeighborsClassifier\_metric=DTW\_n\_neighbors=3 & 0.620 & 0.622787 & 0.620 & 0.905 \\ \hline
+\end{tabular}
+\caption{Statystki dla 1-NN-DTW i 3-NN-DTW}
+\label{tab:knn_dtw_performance}
+\end{table}
+
+
+\begin{figure}[hp!]
+    \centering
+    \includegraphics[width=12.3cm]{DTW1.png}
+    \vspace{-0.1cm}
+    \caption{Krzywa uczenia dla 1-NN-DTW}
+    \label{Krzywa uczenia dla 1-NN-DTW}
+\end{figure}
+\begin{figure}[hp!]
+    \centering
+    \includegraphics[width=12.3cm]{DTW2.png}
+    \vspace{-0.1cm}
+    \caption{Krzywa uczenia dla 3-NN-DTW}
+    \label{Krzywa uczenia dla 3-NN-DTW}
+\end{figure}
+\begin{figure}[hp!]
+    \centering
+    \includegraphics[width=12.3cm]{DTW3.png}
+    \vspace{-0.1cm}
+    \caption{Macierz pomy³ek dla 1-NN-DTW}
+    \label{Macierz pomy³ek dla 1-NN-DTW}
+\end{figure}
+\begin{figure}[hp!]
+    \centering
+    \includegraphics[width=12.3cm]{DTW4.png}
+    \vspace{-0.1cm}
+    \caption{Macierz pomy³ek dla 3-NN-DTW}
+    \label{Macierz pomy³ek dla 3-NN-DTW}
+\end{figure}
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PODROZDZIA£ PT. EKSPERYMENT NR N 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Eksperyment nr 2}
+Wykorzystania algorytmu detekcji zmian ADWIN w celu poznania jego dzia³ania oraz lepszego poznania zbioru danych.
+\subsubsection{Rezultat ADWIN}  
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Numer indeksu wykrycia zmiany} & \textbf{Na jak¹ klasê} \\ \hline
+Change detected at index 1695 & 1 \\ \hline
+Change detected at index 2239 & 2 \\ \hline
+Change detected at index 3711 & 3 \\ \hline
+Change detected at index 3871 & 4 \\ \hline
+\end{tabular}
+\caption{Miejsce i klasa zmiany trendu}
+\label{tab:mlp_performance}
+\end{table}
+
+\newpage
+
+\section{Wnioski}
+
+Wnioski z przeprowadzonych eksperymentów dowodz¹, ¿e 
+
+\begin{itemize}
+    \item Efektywnoœæ klasyfikatorów wykozystaj¹cych z miary DTW jest ni¿sza w przypadkach wiêkszych zbiorów danych posiadaj¹cych wiêcej cech. 
+    \item Utrudnione jest trenowanie klasyfikatorów wykorzystuj¹cych miarê DTW, poniewa¿ liczenie tej miary jest wymagaj¹cym zadaniem dla procesora przez swoj¹ z³o¿on¹ implementacje wykorzystuje programowanie dynamiczne.  
+    \item Metody detekcji dryfu s¹ w stanie z pewn¹ pewnoœci¹ okreœliæ \textbf{concept drift}, w przypadku \textbf{ADWIN} wykorzystywane jest okno przesuwne. 
+    \item Metody detekcji concept drift umo¿liwaj¹ lepiej poznaæ zbiór danych strumieniowych oraz mog¹ byæ wykorzystywane jako triggery poszczególnych operacji w przypadku zmiany trendu.   
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BIBLIOGRAFIA
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand\refname{Bibliografia}
+\bibliographystyle{plain}
+\bibliography{bibliografia_wzor}
+
+\end{document}
