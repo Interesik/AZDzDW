@@ -20,11 +20,6 @@ class DTW_wrapper():
             result = np.append(result, np.array([self.calculate_distance_between_vectors(class_vector,new_vector)]))
         return result 
 
-    def Knn(self, N, result_class0 = [], result_class1 = [], result_class2 = [], result_class3 = [], result_class4 = []):  
-        for result0 in result_class0:
-            
-
-
     def calculate_distance_between_vectors(self,vector_1,vector_2):
         return dtw.distance(vector_1, vector_2)
 
