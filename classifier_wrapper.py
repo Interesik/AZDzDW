@@ -60,11 +60,11 @@ class ClassifierWrapper:
     def transform_labels(self):
         return self.label_binarizer.transform(self.dataManager.test[self.class_col])
 
-    def plot_roc(self, figsize=(16,4), file_to_save=None):
+    def plot_roc(self, figsize=(24,5), file_to_save=None):
         oneVsRestLabels = self.transform_labels()
-        fig, axes = plt.subplots(1, len(CLASSES), figsize=figsize)
+        fig, axes = plt.subplots(1, len(CLASSES+[4]), figsize=figsize)
         
-        for c, ax in zip(CLASSES, axes):
+        for c, ax in zip(CLASSES+[4], axes):
             RocCurveDisplay.from_predictions(oneVsRestLabels[:, int(c)], self.predict_proba()[:, int(c)], ax=ax)
             ax.set(title=f"ROC curve for {c} vs Rest")
             
@@ -92,6 +92,8 @@ class ClassifierWrapper:
         if file_to_save:
             plt.savefig(abspath(file_to_save))
 
+
+    @ensure_fitted
     def calc_params(self, average="macro"):
         true = self.dataManager.test[self.class_col]
         pred = self.predict()
