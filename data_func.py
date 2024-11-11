@@ -5,8 +5,8 @@ from imblearn.over_sampling import RandomOverSampler, SMOTE
 
 from consts import CLASS_COL, VALUE_COLS
 
-DATA_PATH = abspath("./mitbih_train_100.csv")
-TEST_PATH = abspath("./mitbih_test_50.csv")
+DATA_PATH = abspath("./mitbih_train_33.csv")
+TEST_PATH = abspath("./DTW_test_data.csv")
 def balance_classes(data, sampling):
     if sampling == 'RandomOverSampler':
         sampler = RandomOverSampler(k_neighbors=3)

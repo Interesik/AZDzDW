@@ -1,0 +1,221 @@
+\documentclass[12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[T1]{polski}
+\usepackage[cp1250]{inputenc}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsfonts}
+\usepackage[left=1.5cm, right=2cm]{geometry}
+\setlength{\textheight}{21cm}
+
+\title{{\bf Zadanie nr 3 - Detekcja anomali w zbiorze danych}\linebreak
+Analiza danych z³o¿onych z detekcj¹ wyj¹tków}
+\author{Karol Kazusek - 254189, Sebastian Zych - 254264}
+\date{12.11.2024}
+
+\begin{document}
+\clearpage\maketitle
+\thispagestyle{empty}
+\newpage
+\setcounter{page}{1}
+\section{Cel zadania}
+Zadanie polega na detekcji anomali w wybranym strumieniu danych. Do analiz nale¿a³o wybraæ tematykê medycyny lub rozpoznawania faz ruchu aktywnoœci cz³owieka (systemy HAR)
+
+\section{Opis zaproponowanych algorytmów detektorów anomali}
+
+\subsection{Metody detekcji}
+
+\subsubsection{DBSCAN}
+
+Metoda wykorzystuj¹ca \textbf{DBSCAN (Density-Based Spatial Clustering of Applications with Noise)} to algorytm klastrowania, który jest szczególnie przydatny do wykrywania anomalii w zbiorach danych. Jego g³ówn¹ zalet¹ jest to, ¿e mo¿e skutecznie identyfikowaæ gêsto zamieszkane obszary (klastry) w danych oraz odró¿niaæ je od obszarów rzadkich, które uznaje siê za "szum" lub anomalie. Dziêki analizie gêstoœci, DBSCAN mo¿e odró¿niæ obszary z du¿¹ liczb¹ punktów (klastry) od obszarów z nisk¹ gêstoœci¹, które wskazuj¹ na anomalie. DBSCAN wykorzystujê dwa kluczowe parametry:
+
+\begin{itemize}
+    \item \texttt{Epsilon $\epsilon$}: maksymalna odleg³oœæ, w której punkty s¹ uznawane za nale¿¹ce do tego samego klastra.
+    \item \texttt{min sample}: minimalna liczba punktów, które musz¹ znajdowaæ siê w otoczeniu o promieniu $\epsilon$, aby obszar móg³ zostaæ uznany za klaster.
+\end{itemize}
+
+\subsubsection{LOF}
+
+\textbf{LOF (Local Outlier Factor)} to metoda wykrywania anomalii, która opiera siê na analizie \textbf{lokalnej gêstoœci} punktów w zbiorze danych. W przeciwieñstwie do metod globalnych, LOF ocenia odstêpstwa ka¿dego punktu wzglêdem lokalnego otoczenia. To sprawia, ¿e LOF jest szczególnie przydatny, gdy rozk³ad danych jest zró¿nicowany i zawiera regiony o ró¿nej gêstoœci.
+
+
+\subsubsection{COF}
+
+\textbf{COF (Connectivity-Based Outlier Factor)} to metoda detekcji anomalii, która, podobnie jak LOF, analizuje lokalne w³aœciwoœci danych. COF jest szczególnie u¿yteczny, gdy dane s¹ niejednorodne i maj¹ ró¿ne gêstoœci, ale kluczow¹ ró¿nic¹ jest sposób, w jaki ocenia lokaln¹ "odmiennoœæ" ka¿dego punktu. COF bazuje na analizie "po³¹czeñ" pomiêdzy punktami – czyli na analizie drogi, jak¹ trzeba przebyæ, aby dotrzeæ do s¹siadów danego punktu.
+\newpage
+\subsubsection{LUNAR}
+
+\textbf{LUNAR (Local Unsupervised Noise and Anomaly detection with Randomized score)} to nowoczesna metoda wykrywania anomalii, która bazuje na analizie lokalnej struktury danych. Algorytm jest stosowany w detekcji wartoœci odstaj¹cych w z³o¿onych i wielowymiarowych zbiorach danych, przy czym korzysta z podejœcia losowego do oceny anomalii. Algorytm agreguje wyniki anomalii uzyskane z ró¿nych losowych próbek, tworz¹c koñcowy wynik dla ka¿dego punktu.  Na podstawie wartoœci koñcowych LUNAR klasyfikuje punkty o wysokich ocenach jako anomalie.
+
+\pagebreak
+
+\section{Charakterystyka wybranych do danych}
+\href{https://www.researchgate.net/publication/225406553_An_Agent-Based_Approach_to_Care_in_Independent_Living}{Anomaly Detection Falling People}.
+W tym przypadku wybraliœmy dane HAR, dane zostawa³y uzyskiwane z 4 czujników za³o¿onych na: 
+\begin{enumerate}
+  \item klatkce piersiowej.
+  \item Pasku.
+  \item Obu kostkach.
+\end{enumerate}
+Badania te mia³y umo¿liwiæ wykrywanie upadków osób starszych.
+Mierzy³y one odleg³oœci w trzech wymiarach. W celu ³atwej reprezentacji stworzy³em z odleg³oœci X i Y jedn¹ miarê licz¹c¹ odleg³oœæ od punktu zerowego, z myœli¹ ¿e ludzie upadaj¹ w danym kierunku. \\
+\textbf{Liczba próbek}: 5804 \\
+\textbf{Liczba kategorii}: 2 \\
+\textbf{Czêstotliwoœæ próbkowania}: 10  Hz  \\
+
+\section{Eksperymenty i wyniki}
+
+\subsection{Eksperyment nr 1}
+\subsubsection{Za³o¿enia}
+Wykonanie detekcji anomali dla wybanych zbiorów danych obejmuj¹ce dane z ró¿nych po³o¿onych sensorów. 
+
+\subsubsection{Wyniki dla sensora-1:}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=16cm]{DBSCAN1.png}
+    \vspace{-0.1cm}
+    \caption{Wyniki dla DBSCAN sensor 1}
+    \label{Wyniki dla DBSCAN sensor 1}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=16cm]{LOF1.png}
+    \vspace{-0.1cm}
+    \caption{Wyniki dla LOF sensor 1}
+    \label{Wyniki dla LOF sensor 1}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=16cm]{COF1.png}
+  \vspace{-0.1cm}
+  \caption{Wyniki dla COF sensor 1}
+  \label{Wyniki dla COF sensor 1}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=16cm]{LUNAR1.png}
+  \vspace{-0.1cm}
+  \caption{Wyniki dla LUNAR sensor 1}
+  \label{Wyniki dla LUNAR sensor 1}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PODROZDZIA£ PT. EKSPERYMENT NR N 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+\subsubsection{Wyniki dla sensora-2:}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=16cm]{DBSCAN2.png}
+  \vspace{-0.1cm}
+  \caption{Wyniki dla DBSCAN sensor 2}
+  \label{Wyniki dla DBSCAN sensor 2}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=16cm]{LOF2.png}
+  \vspace{-0.1cm}
+  \caption{Wyniki dla LOF sensor 2}
+  \label{Wyniki dla LOF sensor 2}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=16cm]{COF2.png}
+  \vspace{-0.1cm}
+  \caption{Wyniki dla COF sensor 2}
+  \label{Wyniki dla COF sensor 2}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=16cm]{LUNAR2.png}
+  \vspace{-0.1cm}
+  \caption{Wyniki dla LUNAR sensor 2}
+  \label{Wyniki dla LUNAR sensor 2}
+\end{figure}
+
+\newpage
+
+\subsubsection{Wyniki dla sensora-3:}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=16cm]{DBSCAN3.png}
+  \vspace{-0.1cm}
+  \caption{Wyniki dla DBSCAN sensor 3}
+  \label{Wyniki dla DBSCAN sensor 3}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=16cm]{LOF3.png}
+  \vspace{-0.1cm}
+  \caption{Wyniki dla LOF sensor 3}
+  \label{Wyniki dla LOF sensor 3}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=16cm]{COF3.png}
+  \vspace{-0.1cm}
+  \caption{Wyniki dla COF sensor 3}
+  \label{Wyniki dla COF sensor 3}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=16cm]{LUNAR3.png}
+  \vspace{-0.1cm}
+  \caption{Wyniki dla LUNAR sensor 3}
+  \label{Wyniki dla LUNAR sensor 3}
+\end{figure}
+
+\newpage
+
+\subsubsection{Wyniki dla sensora-4:}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=16cm]{DBSCAN4.png}
+  \vspace{-0.1cm}
+  \caption{Wyniki dla DBSCAN sensor 4}
+  \label{Wyniki dla DBSCAN sensor 4}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=16cm]{LOF4.png}
+  \vspace{-0.1cm}
+  \caption{Wyniki dla LOF sensor 4}
+  \label{Wyniki dla LOF sensor 4}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=16cm]{COF4.png}
+  \vspace{-0.1cm}
+  \caption{Wyniki dla COF sensor 4}
+  \label{Wyniki dla COF sensor 4}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=16cm]{LUNAR4.png}
+  \vspace{-0.1cm}
+  \caption{Wyniki dla LUNAR sensor 4}
+  \label{Wyniki dla LUNAR sensor 4}
+\end{figure}
+
+\newpage
+
+\section{Wnioski}
+
+Wnioski z przeprowadzonych eksperymentów dowodz¹, ¿e 
+
+\begin{itemize}
+    \item DBSCAN jako jedyny detektor z poprawnymi parametrami wykry³ anomalie jako oddzieln¹ klasê upadków. By³o to mo¿liwe dzieki sposobie tworzenia klastrów. Wykorzystuj¹c globaln¹ gêstoœæ, zamiast lokanych jak w pozosta³ych metodach.
+    \item Pozosta³e detektory wykrywa³y lokalne anomalie. Nale¿y zauwa¿yæ ¿e metoda lunar czêsto pomija niektóre anomalie, zostawiaj¹c 1,2 elementy jako zbiór normalnych pomiarów gdzie LOF oraz COF przypisuj¹ tym rekord¹ etykiete anomali. 
+  
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BIBLIOGRAFIA
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}

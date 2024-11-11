@@ -33,7 +33,7 @@ Metoda \textbf{K-Najbliøszych SπsiadÛw (K-NN)} to jedna z najprostszych technik 
 \begin{itemize}
     \item \texttt{n\_neighbors}: Liczba sπsiadÛw (\( K \)) do uwzglÍdnienia przy klasyfikacji.
     \item \texttt{weights}: SposÛb waøenia sπsiadÛw. Moøliwe wartoúci to \texttt{'uniform'} (wszyscy sπsiedzi majπ takπ samπ wagÍ) i \texttt{'distance'} (bliøsi sπsiedzi majπ wiÍkszy wp≥yw).
-    \item \texttt{metric}: Miara odleg≥oúci uøywana do porÛwnania punktÛw, w naszym przypadku wyznaczamy odleg≥oúÊ za pomocπ metryki wyznaczonπ przez DTW.
+    \item \texttt{metric}: Miara odleg≥oúci uøywana do porÛwnania punktÛw, w naszym przypadku wyznaczamy odleg≥oúÊ za pomocπ metryki wyznaczonπ przez DTW oraz euklidesowπ do porÛwnania.
 \end{itemize}
 
 \subsubsection{DTW}
@@ -41,6 +41,17 @@ Metoda \textbf{K-Najbliøszych SπsiadÛw (K-NN)} to jedna z najprostszych technik 
 Metryka \textbf{Dynamic Time Warping (DTW)} to algorytm s≥uøπcy do mierzenia odleg≥oúci miÍdzy dwoma sekwencjami czasowymi, ktÛre mogπ rÛøniÊ siÍ czestotliwoúciπ, fazπ lub d≥ugoúciπ. Jego celem jest znalezienie optymalnej nieliniowej úcieøki dopasowania miÍdzy dwiema sekwencjami, minimalizujπc rÛønice miÍdzy nimi.
 Algorytm wykorzystuje dynamiczne programowanie, aby efektywnie znaleüÊ najlepsze dopasowanie.
 
+
+\subsubsection{TSF}
+\textbf{TimeSeriesForest (TSF)} to algorytm klasyfikacji szeregÛw czasowych zaprojektowany z myúlπ o analizie i modelowaniu danych sekwencyjnych. Jest on rozwiniÍciem klasycznych metod klasyfikacji, takich jak lasy losowe, jednak dostosowany do pracy z danymi zmieniajπcymi siÍ w czasie.
+TimeSeriesForest wykorzystuje koncepcjÍ lasÛw losowych, aby po≥πczyÊ wyniki z wielu drzew decyzyjnych, dziÍki czemu model osiπga wyøszπ dok≥adnoúÊ i lepszπ generalizacjÍ. W TSF kaøde drzewo jest trenowane na losowych podprÛbkach danych czasowych, a jego struktura jest dostosowana do analizy charakterystycznych cech serii czasowych.
+
+\begin{itemize}
+  \item \texttt{n\_estimators}: Liczba drzew ktÛre bÍdπ podejmowaÊ decyzjÍ o klasyfikacji wzorca.
+  \item \texttt{n\_windows}: Liczba okien, z ktÛrych wyodrÍbniane sπ cechy.
+  \item \texttt{min\_window\_size}: Minimalna d≥ugoúÊ okien wykorzystwyana w klasyfikacji.
+\end{itemize}
+\pagebreak
 \subsection{Metoda detekcji zmian}
 
 \subsubsection{ADWIN}
@@ -68,12 +79,11 @@ Kiedy wykrywana jest istotna rÛønica miÍdzy starπ a nowπ czÍúciπ okna, starsze d
     \item Opis: Minimalna d≥ugoúÊ okna obserwacyjnego, chroni przed zbyt szybkim usuwaniem starszych danych.
   \end{itemize}
   
-  \item \textbf{grace\_period}:
-  \begin{itemize}
-    \item Typ: \texttt{int}
-    \item Opis: Minimalna liczba obserwacji przed rozpoczÍciem testu na concept drift.
-  \end{itemize}
 \end{itemize}
+\subsubsection{DDM}
+\textbf{DDM (Drift Detection Method)} to metoda wykrywania zmian koncepcyjnych oparta na modelu PAC (Probably Approximately Correct), zak≥adajπca, øe jeúli rozk≥ad danych jest stacjonarny, to wraz ze wzrostem liczby analizowanych prÛbek wskaünik b≥ÍdÛw klasyfikatora powinien siÍ zmniejszaÊ.
+
+Jeúli algorytm wykryje wzrost wskaünika b≥ÍdÛw, ktÛry przekroczy wyznaczony prÛg, uznaje, øe nastπpi≥a zmiana lub ostrzega uøytkownika o moøliwoúci zmiany w najbliøszym czasie ñ tÍ sytuacjÍ nazywa siÍ strefπ ostrzeøenia (warning zone).
 
 \section{Charakterystyka wybranych do danych}
 
@@ -104,14 +114,25 @@ Kroki uøywane do ekstrakcji uderzeÒ z sygna≥u EKG wed≥ug autorÛw DBLP:journals/c
     Fuzja skurczu komorowego i normalnego uderzenia &  3 & 162\\ 
     Niezdyscyplinowane uderzenie &  4 & 1608\\ 
 \end{tabular}
-Dane w celu trenowania klasyfikatorÛw 1-NN-DTW i 3-NN-DTW zosta≥y okrojeone do liczebnoúci 100 na kaødπ klasÍ, przez wysokie wymagania sprzÍtowe algorytmÛw.
 
+
+Dane w celu trenowania klasyfikatorÛw 1-NN-DTW i 3-NN-DTW zosta≥y okrojeone do liczebnoúci 100 na kaødπ klasÍ, przez wysokie wymagania sprzÍtowe algorytmÛw.
+\subsection{ZbiÛr danych wykorzystywany w Concept drift}
+Jest to zbiÛr opisujπcy wygenerowany ruch siciowy, wykorzystywany jest jako zbiÛr testowy wykrywania anomali.
+Zawiera w sobie informacjÍ o:
+\begin{enumerate}
+  \item èrÛdle i celu transmisji.
+  \item Porcie ürÛd≥owym oraz celu.
+  \item ProtokÛ≥.
+  \item Rozmiar transmisji i iloúÊ pakietÛw.
+  \item Czas trwania transmisji.
+\end{enumerate}
 
 \section{Eksperymenty i wyniki}
 
 \subsection{Eksperyment nr 1}
 \subsubsection{Za≥oøenia}
-Wykonanie klasyfikatora z metrykπ DTW dla rÛønych liczby sπsiadÛw.
+Wykonanie klasyfikatora K-nn z metrykπ DTW dla rÛønych liczby sπsiadÛw.
 
 \subsubsection{Rezultat 1-NN-DTW i 3-NN-DTW}
 \begin{table}[htbp]
@@ -134,14 +155,7 @@ KNeighborsClassifier\_metric=DTW\_n\_neighbors=3 & 0.620 & 0.622787 & 0.620 & 0.
     \caption{Krzywa uczenia dla 1-NN-DTW}
     \label{Krzywa uczenia dla 1-NN-DTW}
 \end{figure}
-\begin{figure}[hp!]
-    \centering
-    \includegraphics[width=12.3cm]{DTW2.png}
-    \vspace{-0.1cm}
-    \caption{Krzywa uczenia dla 3-NN-DTW}
-    \label{Krzywa uczenia dla 3-NN-DTW}
-\end{figure}
-\begin{figure}[hp!]
+\begin{figure}[htbp!]
     \centering
     \includegraphics[width=12.3cm]{DTW3.png}
     \vspace{-0.1cm}
@@ -149,19 +163,69 @@ KNeighborsClassifier\_metric=DTW\_n\_neighbors=3 & 0.620 & 0.622787 & 0.620 & 0.
     \label{Macierz pomy≥ek dla 1-NN-DTW}
 \end{figure}
 \begin{figure}[hp!]
-    \centering
-    \includegraphics[width=12.3cm]{DTW4.png}
-    \vspace{-0.1cm}
-    \caption{Macierz pomy≥ek dla 3-NN-DTW}
-    \label{Macierz pomy≥ek dla 3-NN-DTW}
+  \centering
+  \includegraphics[width=12.3cm]{DTW2.png}
+  \vspace{-0.1cm}
+  \caption{Krzywa uczenia dla 3-NN-DTW}
+  \label{Krzywa uczenia dla 3-NN-DTW}
 \end{figure}
-\newpage
+\begin{figure}[htbp!]
+  \centering
+  \includegraphics[width=12.3cm]{DTW4.png}
+  \vspace{-0.1cm}
+  \caption{Macierz pomy≥ek dla 3-NN-DTW}
+  \label{Macierz pomy≥ek dla 3-NN-DTW}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PODROZDZIA£ PT. EKSPERYMENT NR N 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\subsubsection{Rezultat TSF}
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{|l|c|c|c|c|}
+  \hline
+  \textbf{Classifier} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+  TimeSeriesForest\_n\_w=1\_min\_window\_size=1 & 0.712997 & 0.655248 & 0.601963 & 0.921563 \\ \hline
+  TimeSeriesForest\_n\_w=1\_min\_window\_size=5 & 0.746870 & 0.732415 & 0.698350 & 0.930439 \\ \hline
+  TimeSeriesForest\_n\_w=1\_min\_window\_size=10 & 0.736009 & 0.712384 & 0.674085 & 0.927971 \\ \hline
+  TimeSeriesForest\_n\_w=5\_min\_window\_size=1 & 0.870214 & 0.845206 & 0.805423 & 0.964475 \\ \hline
+  TimeSeriesForest\_n\_w=5\_min\_window\_size=5 & 0.832474 & 0.810761 & 0.775638 & 0.954112 \\ \hline
+  TimeSeriesForest\_n\_w=5\_min\_window\_size=10 & 0.878314 & 0.856982 & 0.823460 & 0.966818 \\ \hline
+  TimeSeriesForest\_n\_w=10\_min\_window\_size=1 & 0.856222 & 0.816359 & 0.792334 & 0.960982 \\ \hline
+  TimeSeriesForest\_n\_w=10\_min\_window\_size=5 & 0.927835 & 0.904411 & 0.874825 & 0.980398 \\ \hline
+  TimeSeriesForest\_n\_w=10\_min\_window\_size=10 & 0.924521 & 0.908856 & 0.870622 & 0.979297 \\ \hline
+  \end{tabular}
+  \caption{Statystki dla TimeSeriesForest z rÛønymi rozmiarami okien}
+  \label{tab:tsf_performance}
+  \end{table}
+  \begin{figure}[hp!]
+    \centering
+    \includegraphics[width=12.3cm]{TSF.png}
+    \vspace{-0.1cm}
+    \caption{Krzywa uczenia dla TSF}
+    \label{Krzywa uczenia dla TSF}
+\end{figure}
+\begin{figure}[hp!]
+    \centering
+    \includegraphics[width=12.3cm]{TSF2.png}
+    \vspace{-0.1cm}
+    \caption{Macierz pomy≥ek dla TSF}
+    \label{Macierz pomy≥ek dla TSF}
+\end{figure}
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=12.3cm]{TSF3.png}
+    \vspace{-0.1cm}
+    \caption{Wykres AUROC dla TSF}
+    \label{Wykres AUROC dla TSF}
+\end{figure}
+
+\newpage
 
 \subsection{Eksperyment nr 2}
-Wykorzystania algorytmu detekcji zmian ADWIN w celu poznania jego dzia≥ania oraz lepszego poznania zbioru danych.
+Wykorzystania algorytmÛw detekcji zmian w celu poznania ich dzia≥ania oraz lepszego poznania wybranych zbioru danych.
 \subsubsection{Rezultat ADWIN}  
 \begin{table}[htbp]
 \centering
@@ -174,9 +238,23 @@ Change detected at index 3711 & 3 \\ \hline
 Change detected at index 3871 & 4 \\ \hline
 \end{tabular}
 \caption{Miejsce i klasa zmiany trendu}
-\label{tab:mlp_performance}
+\label{tab:ADWIN}
 \end{table}
-
+\subsubsection{Rezultat DDM}
+Naleøy pamietaÊ øe algorytmy takie jak \textbf{DDM} i \textbf{EDDM} wykrywajπ tylko \textbf{binarnπ zmianÍ}, w tym przypadku musieliúmy wykorzystaÊ drugi zbiÛr danych. 
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|l|}
+\hline
+\textbf{Numer indeksu wykrycia zmiany} \\ \hline
+Change detected at index 138 \\ \hline
+Change detected at index 408 \\ \hline
+Change detected at index 510 \\ \hline
+Change detected at index 722 \\ \hline
+\end{tabular}
+\caption{Miejsce zmiany trendu}
+\label{tab:DDM}
+\end{table}
 \newpage
 
 \section{Wnioski}
@@ -184,18 +262,16 @@ Change detected at index 3871 & 4 \\ \hline
 Wnioski z przeprowadzonych eksperymentÛw dowodzπ, øe 
 
 \begin{itemize}
-    \item EfektywnoúÊ†klasyfikatorÛw wykozystajπcych z miary DTW jest niøsza w przypadkach wiÍkszych zbiorÛw danych posiadajπcych wiÍcej cech. 
-    \item Utrudnione jest trenowanie klasyfikatorÛw wykorzystujπcych miarÍ DTW, poniewaø liczenie tej miary jest wymagajπcym zadaniem dla procesora przez swojπ z≥oøonπ implementacje wykorzystuje programowanie dynamiczne.  
-    \item Metody detekcji dryfu sπ w stanie z pewnπ pewnoúciπ okreúliÊ \textbf{concept drift}, w przypadku \textbf{ADWIN} wykorzystywane jest okno przesuwne. 
+    \item EfektywnoúÊ klasyfikatorÛw wykozystajπcych z miary DTW jest niøsza w przypadkach wiÍkszych zbiorÛw danych posiadajπcych wysokπ iloúÊ cech w zbiorze. 
+    \item Utrudnione jest trenowanie klasyfikatorÛw wykorzystujπcych miarÍ DTW, poniewaø liczenie tej miary jest wymagajπcym zadaniem dla procesora przez swojπ z≥oøonπ implementacje wykorzystuje programowanie dynamiczne.
+    \item EfektywnoúÊ klasyfikatora TimeSeriesForest jest porÛwnywalny do poprzednie badanych klasyfikatorÛw, co czyni go skutecznym narzÍdziem w analizie i klasyfikacji danych sekwencyjnych, pomimo duøej iloúci cech w zbiorze. Naleøy jednak pamiÍtaÊ o wybraniu w takim przypadku \textbf{wiÍkszego okna kontekstu}.
+    \item Metody detekcji dryfu sπ w stanie z pewnπ pewnoúciπ okreúliÊ \textbf{concept drift}, w przypadku \textbf{ADWIN} wykorzystywane jest okno przesuwne, aby okreúliÊ ten moment.
+    \item DDM jest skutecznπ metodπ wykrywania zmiany rozk≥adu danych.
     \item Metody detekcji concept drift umoøliwajπ lepiej poznaÊ zbiÛr danych strumieniowych oraz mogπ byÊ wykorzystywane jako triggery poszczegÛlnych operacji w przypadku zmiany trendu.   
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BIBLIOGRAFIA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\renewcommand\refname{Bibliografia}
-\bibliographystyle{plain}
-\bibliography{bibliografia_wzor}
 
 \end{document}
